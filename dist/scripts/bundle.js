@@ -50950,6 +50950,7 @@ module.exports = authorForm;
 "use strict";
 
 var React = require('react');
+var Link = require('react-router').Link;
 
 var AuthorList = React.createClass({displayName: "AuthorList",
 
@@ -50962,13 +50963,8 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 		var createAuthorRow = function(author){
 			return (
 					React.createElement("tr", {key: author.id}, 
-						React.createElement("td", null, React.createElement("a", {href: "/#authors/" + author.id}, 
-							author.id
-							)
-							), 
-						React.createElement("td", null, 
-							author.firstName, " ", author.lastName
-						)
+						React.createElement("td", null, React.createElement(Link, {to: "manageAuthor", params: {id: author.id}}, author.id)), 
+						React.createElement("td", null, author.firstName, " ", author.lastName)
 					)
 				);
 		};
@@ -50992,7 +50988,7 @@ var AuthorList = React.createClass({displayName: "AuthorList",
 
 module.exports = AuthorList;
 
-},{"react":200}],209:[function(require,module,exports){
+},{"react":200,"react-router":30}],209:[function(require,module,exports){
 "use strict";
 
 var React = require('react');
@@ -51043,14 +51039,31 @@ var manageAuthorPage = React.createClass({displayName: "manageAuthorPage",
             Router.Navigation
         ],
 
+    statics: {
+        willTransitionFrom: function (transition, component) {
+            if(component.state.dirty && !confirm('Te vas sin guardar?')){
+                transition.abort();
+            }
+        }
+    },
+
     getInitialState: function () {
         return {
             author: {id: "", firstName: "", lastName: ""},
-            errors: {}
+            errors: {},
+            dirty: false
         };
     },
 
+    componentWillMount: function () {
+        var authorId = this.props.params.id;
+        if(authorId){
+            this.setState({author: AuthorApi.getAuthorById(authorId)});
+        }
+    },
+
     setAuthorState: function (event) {
+        this.setState({dirty: true});
         var field = event.target.name;
         var value = event.target.value;
         this.state.author[field] = value;
@@ -51083,6 +51096,7 @@ var manageAuthorPage = React.createClass({displayName: "manageAuthorPage",
             return;
         }
         AuthorApi.saveAuthor(this.state.author);
+        this.setState({dirty: false});
         toastr.success("Agregado papud");
         this.transitionTo('authors');
     },
@@ -51224,6 +51238,7 @@ var routes = (
         React.createElement(DefaultRoute, {handler: require('./components/homepage')}), 
         React.createElement(Route, {name: "authors", handler: require('./components/authors/authorPage')}), 
         React.createElement(Route, {name: "about", handler: require('./components/about/aboutPage')}), 
+        React.createElement(Route, {name: "manageAuthor", path: "author/:id", handler: require('./components/authors/manageAuthorPage')}), 
         React.createElement(Route, {name: "addAuthor", path: "author", handler: require('./components/authors/manageAuthorPage')}), 
         React.createElement(NotFoundRoute, {handler: require('./components/404')}), 
         React.createElement(Redirect, {from: "about-us", to: "about"})
