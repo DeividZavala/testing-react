@@ -29,8 +29,6 @@ var Authors = React.createClass({
 		);
 	}
 
-	
-
 });
 
 module.exports = Authors;

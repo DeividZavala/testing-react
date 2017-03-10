@@ -4,6 +4,14 @@ var React = require('react');
 var Input = require('../common/textinput');
 
 var authorForm = React.createClass({
+
+    propTypes: {
+        author: React.PropTypes.object.isRequired,
+        onSave: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        errors: React.PropTypes.object
+    },
+
     render: function () {
         return (
             <form>
@@ -15,6 +23,7 @@ var authorForm = React.createClass({
                     value={this.props.author.firstName}
                     placeholder="Tu nombre papud"
                     onChange={this.props.onChange}
+                    error={this.props.errors.firstName}
                 />
 
                 <Input 
@@ -23,6 +32,7 @@ var authorForm = React.createClass({
                     value={this.props.author.lastName}
                     placeholder="Tu Apellido papud"
                     onChange={this.props.onChange}
+                    error={this.props.errors.lastName}
                 />
                 
                 <button type="submit" className="btn btn-success" onClick={this.props.onSave}>Picale papud</button>

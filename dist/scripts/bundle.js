@@ -50907,6 +50907,14 @@ var React = require('react');
 var Input = require('../common/textinput');
 
 var authorForm = React.createClass({displayName: "authorForm",
+
+    propTypes: {
+        author: React.PropTypes.object.isRequired,
+        onSave: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        errors: React.PropTypes.object
+    },
+
     render: function () {
         return (
             React.createElement("form", null, 
@@ -50917,7 +50925,8 @@ var authorForm = React.createClass({displayName: "authorForm",
                     label: "Nombre:", 
                     value: this.props.author.firstName, 
                     placeholder: "Tu nombre papud", 
-                    onChange: this.props.onChange}
+                    onChange: this.props.onChange, 
+                    error: this.props.errors.firstName}
                 ), 
 
                 React.createElement(Input, {
@@ -50925,7 +50934,8 @@ var authorForm = React.createClass({displayName: "authorForm",
                     label: "Apellido:", 
                     value: this.props.author.lastName, 
                     placeholder: "Tu Apellido papud", 
-                    onChange: this.props.onChange}
+                    onChange: this.props.onChange, 
+                    error: this.props.errors.lastName}
                 ), 
                 
                 React.createElement("button", {type: "submit", className: "btn btn-success", onClick: this.props.onSave}, "Picale papud")
@@ -51014,8 +51024,6 @@ var Authors = React.createClass({displayName: "Authors",
 		);
 	}
 
-	
-
 });
 
 module.exports = Authors;
@@ -51037,7 +51045,8 @@ var manageAuthorPage = React.createClass({displayName: "manageAuthorPage",
 
     getInitialState: function () {
         return {
-            author: {id: "", firstName: "", lastName: ""}
+            author: {id: "", firstName: "", lastName: ""},
+            errors: {}
         };
     },
 
@@ -51048,8 +51057,31 @@ var manageAuthorPage = React.createClass({displayName: "manageAuthorPage",
         return this.setState({author: this.state.author});
     },
 
+    authorFormIsValid: function () {
+        var formIsValid = true;
+        this.state.errors = {};
+
+        if (this.state.author.firstName.length < 3) {
+            this.state.errors.firstName = "Fist name must be al least 3 characters";
+            formIsValid = false;
+        }
+
+        if (this.state.author.lastName.length < 3) {
+            this.state.errors.lastName = "Last name must be al least 3 characters";
+            formIsValid = false;
+        }
+
+        this.setState({errors: this.state.errors});
+        return formIsValid;
+    },
+
     saveAuthor: function (event) {
         event.preventDefault();
+
+        if(!this.authorFormIsValid()){
+            toastr.error("Error en el formulario papud");
+            return;
+        }
         AuthorApi.saveAuthor(this.state.author);
         toastr.success("Agregado papud");
         this.transitionTo('authors');
@@ -51058,7 +51090,12 @@ var manageAuthorPage = React.createClass({displayName: "manageAuthorPage",
     render: function(){
         return (
 
-            React.createElement(AuthorForm, {author: this.state.author, onChange: this.setAuthorState, onSave: this.saveAuthor})
+            React.createElement(AuthorForm, {
+                author: this.state.author, 
+                onChange: this.setAuthorState, 
+                onSave: this.saveAuthor, 
+                errors: this.state.errors}
+            )
 
         );
     }
