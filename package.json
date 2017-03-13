@@ -24,5 +24,9 @@
     "reactify": "^1.1.1",
     "toastr": "^2.1.2",
     "vinyl-source-stream": "^1.1.0"
+  },
+  "devDependencies": {
+    "gulp-jsmin": "^0.1.5",
+    "gulp-streamify": "^1.0.2"
   }
 }

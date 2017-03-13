@@ -8,6 +8,8 @@ var reactify = require('reactify'); // transform jsx to js
 var source = require('vinyl-source-stream');
 var concat =  require('gulp-concat'); // concatenate files
 var lint = require('gulp-eslint'); //lint js files, including jsx debuguer
+var jsmin = require('gulp-jsmin');
+var streamify = require('gulp-streamify');
 
 var config = {
 	port: 8000,
@@ -53,6 +55,7 @@ gulp.task('js', function(){
 		.bundle()
 		.on('error', console.error.bind(console))
 		.pipe(source('bundle.js'))
+		.pipe(streamify(jsmin()))
 		.pipe(gulp.dest(config.paths.dist + '/scripts'))
 		.pipe(connect.reload());
 });
