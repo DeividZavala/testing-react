@@ -10,6 +10,7 @@ var concat =  require('gulp-concat'); // concatenate files
 var lint = require('gulp-eslint'); //lint js files, including jsx debuguer
 var jsmin = require('gulp-jsmin');
 var streamify = require('gulp-streamify');
+var cleanCSS = require('gulp-clean-css')
 
 var config = {
 	port: 8000,
@@ -63,6 +64,7 @@ gulp.task('js', function(){
 gulp.task('css', function(){
 	gulp.src(config.paths.css)
 		.pipe(concat('bundle.css'))
+		.pipe(cleanCSS())
 		.pipe(gulp.dest(config.paths.dist + '/css'));
 });
 
