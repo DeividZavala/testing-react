@@ -2,9 +2,10 @@
 
 var React = require('react');
 var AuthorForm = require('./authorForm');
-var AuthorApi = require('../../api/authorapi');
 var Router = require('react-router');
 var toastr = require('toastr');
+var AuthorActions = require('../../actions/authorActions');
+var AuthorStore = require('../../stores/authorStore');
 
 var manageAuthorPage = React.createClass({
 
@@ -31,7 +32,7 @@ var manageAuthorPage = React.createClass({
     componentWillMount: function () {
         var authorId = this.props.params.id;
         if(authorId){
-            this.setState({author: AuthorApi.getAuthorById(authorId)});
+            this.setState({author: AuthorStore.getAuthorById(authorId)});
         }
     },
 
@@ -68,7 +69,13 @@ var manageAuthorPage = React.createClass({
             toastr.error("Error en el formulario papud");
             return;
         }
-        AuthorApi.saveAuthor(this.state.author);
+
+        if(this.state.author.id){
+            AuthorActions.updateAuthor(this.state.author);
+        }else{
+            AuthorActions.createAuthor(this.state.author);
+        }
+
         this.setState({dirty: false});
         toastr.success("Agregado papud");
         this.transitionTo('authors');
