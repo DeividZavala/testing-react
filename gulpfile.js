@@ -10,7 +10,8 @@ var concat =  require('gulp-concat'); // concatenate files
 var lint = require('gulp-eslint'); //lint js files, including jsx debuguer
 var jsmin = require('gulp-jsmin');
 var streamify = require('gulp-streamify');
-var cleanCSS = require('gulp-clean-css')
+var cleanCSS = require('gulp-clean-css');
+var imagemin = require('gulp-imagemin');
 
 var config = {
 	port: 8000,
@@ -70,6 +71,7 @@ gulp.task('css', function(){
 
 gulp.task('images', function(){
 	gulp.src(config.paths.images)
+		.pipe(imagemin())
 		.pipe(gulp.dest(config.paths.dist + '/images'))
 		.pipe(connect.reload());
 		//publish favicon

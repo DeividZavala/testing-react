@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "gulp-clean-css": "^3.0.3",
+    "gulp-imagemin": "^3.1.1",
     "gulp-jsmin": "^0.1.5",
     "gulp-streamify": "^1.0.2"
   }
